@@ -1,2 +1,2 @@
 # simple-asm-interpreter
-Intrepreter for Simple Machine Assembler
+Interpreter for Simple Machine Assembler
