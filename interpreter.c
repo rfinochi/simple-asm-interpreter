@@ -4,44 +4,20 @@
 #include <interpreter.h>
 #include <io.h>
 
-// Operation Codes for Simple Machine Assembler
-#define READ 10
-#define WRITE 11
-#define LOAD 20
-#define STORE 21
-#define ADD 30
-#define SUBTRACT 31
-#define DIVIDE 32
-#define MULTIPLY 33
-#define MOD 34
-#define POWER 36
-#define BRANCH 40
-#define BRANCHNEG 41
-#define BRANCHZERO 42
-#define HALT 43
-#define RSTRING 50
-#define WSTRING 51
-
-// Memory size (max words)
-#define MEM_SIZE 100
-
-// Simple Machine memory
 int memory[MEM_SIZE] = {0};
 
-// Registers
-int acumulator = 0;
+int accumulator = 0;
 int instruction_counter = 0;
 int instruction_register = 0;
 int operation_code = 0;
 int operand = 0;
 
-// Last memory position used by currente loaded program
 int last_memory_position_used = 0;
 
-void type_program(void) {
+void type(void) {
 	int opc;
 
-	reset_memory();
+	cleanup();
 	
     printf( "\n\t*** Please enter your program one instruction ***\n");
 	printf( "\t*** (or data word) at a time. I will type the ***\n");
@@ -73,15 +49,15 @@ void type_program(void) {
 	getchar();
 }
 
-void load_program(void) {
-	reset_memory();
+void load(void) {
+	cleanup();
 
 	last_memory_position_used = read_program(memory);
 
 	getchar();
 }
 
-void run_program(void) {
+void execute(void) {
 	char str[99];
 	int y = 0, s = 1;
 
@@ -103,49 +79,45 @@ void run_program(void) {
 				instruction_counter++;
 				break;
 			case LOAD:
-				acumulator = memory[operand];
+				accumulator = memory[operand];
 				instruction_counter++;
 				break;
 			case STORE:
-				memory[operand] = acumulator;
+				memory[operand] = accumulator;
 				instruction_counter++;
 				break;
 			case ADD:
-				acumulator += memory[operand];
+				accumulator += memory[operand];
 				instruction_counter++;
 				break;
 			case SUBTRACT:
-				acumulator -= memory[operand];
+				accumulator -= memory[operand];
 				instruction_counter++;
 				break;
 			case DIVIDE:
-				acumulator /= memory[operand];
+				accumulator /= memory[operand];
 				instruction_counter++;
 				break;
 			case MULTIPLY:
-				acumulator *= memory[operand];
+				accumulator *= memory[operand];
 				instruction_counter++;
 				break;
 			case MOD:
-				acumulator %= memory[operand];
-				instruction_counter++;
-				break;
-			case POWER:
-				acumulator = pow(acumulator,memory[operand]);
+				accumulator %= memory[operand];
 				instruction_counter++;
 				break;
 			case BRANCH:
 				instruction_counter = operand;
 				break;
 			case BRANCHNEG:
-				if (acumulator < 0) {
+				if (accumulator < 0) {
 					instruction_counter = operand;
 				} else {
 					instruction_counter++;
 				}
 				break;
 			case BRANCHZERO:
-				if (acumulator == 0) {
+				if (accumulator == 0) {
 					instruction_counter = operand;
 				}
 				else {
@@ -197,12 +169,12 @@ void run_program(void) {
 	getchar();
 }
 
-void dump_memory() {
+void dump() {
 	int co = 0, t = 0, codos = 0;
 	
 	printf("\n*** Memory State ***\n\n");
 	printf("REGISTERS:\n");
-	printf("\tAcumulator:\t\t%d\n",acumulator);
+	printf("\taccumulator:\t\t%d\n",accumulator);
 	printf("\tInstruction Counter:\t%d\n",instruction_counter);
 	printf("\tInstruction Register:\t%d\n",instruction_register);
 	printf("\tOperation Code:\t\t%d\n",operation_code);
@@ -232,14 +204,14 @@ void dump_memory() {
 	getchar();
 }
 
-void reset_memory(void) {
+void cleanup(void) {
 	int i;
 
 	for (i = 0; i <MEM_SIZE; i++) {
 		memory[i] = 0;
 	}
 	
-	acumulator = 0;
+	accumulator = 0;
 	operation_code = 0;
 	operand = 0;
 	instruction_register = 0;

@@ -18,14 +18,14 @@ int main() {
 
 		switch (opc) {
 			case 1:
-				type_program();
-				run_program();
-				dump_memory();
+				type();
+				execute();
+				dump();
 				break;
 			case 2 :
-				load_program();
-				run_program();
-				dump_memory();
+				load();
+				execute();
+				dump();
 				break;
 			case 3 :
 				clrscr();
