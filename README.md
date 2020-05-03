@@ -73,7 +73,7 @@ This project also comes has been dockerized and the container can be built by ru
 ```bash
 make docker
 ```
-You can execute `docker run -it smli` in order to execute the docker container
+You can execute `docker run -it smli` in order to execute the docker container.
 
 #### Credits ####
 This program is excersise inspired by chapter 7 of book *_C How to Program From Paul Deitel & Harvey Deitel_*.
