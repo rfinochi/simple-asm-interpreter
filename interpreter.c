@@ -2,7 +2,7 @@
 #include <math.h>
 
 #include <interpreter.h>
-#include <screen.h>
+#include <io.h>
 
 // Operation Codes for Simple Machine Assembler
 #define READ 10
@@ -38,13 +38,12 @@ int operand = 0;
 // Last memory position used by currente loaded program
 int last_memory_position_used = 0;
 
-void type_program(void)
-{
+void type_program(void) {
 	int opc;
-	
-	clrscr();
 
-    printf( "\t*** Please enter your program one instruction ***\n");
+	reset_memory();
+	
+    printf( "\n\t*** Please enter your program one instruction ***\n");
 	printf( "\t*** (or data word) at a time. I will type the ***\n");
 	printf( "\t*** location number and a queston mark (?).   ***\n");
 	printf( "\t*** You then type the word for that location. ***\n");
@@ -68,27 +67,32 @@ void type_program(void)
 	scanf("%d", &opc);
 
 	if (opc == 2) {
-		save_program();
+		write_program(last_memory_position_used, memory);
 	}
 
 	getchar();
 }
 
-void run_program(void)
-{
+void load_program(void) {
+	reset_memory();
+
+	last_memory_position_used = read_program(memory);
+
+	getchar();
+}
+
+void run_program(void) {
 	char str[99];
 	int y = 0, s = 1;
 
-	clrscr();
-	printf("*** Program execution begin ***\n");
+	printf("\n*** Program execution begin ***\n");
 
 	while(last_memory_position_used != instruction_counter) {
 		instruction_register = memory[instruction_counter];
 		operation_code = instruction_register / 100;
 		operand = instruction_register % 100;
 
-		switch (operation_code)
-		{
+		switch (operation_code) {
 			case READ:
 				printf("\n? ");
 				scanf("%d",&memory[operand]);
@@ -193,18 +197,17 @@ void run_program(void)
 	getchar();
 }
 
-void dump_memory()
-{
+void dump_memory() {
 	int co = 0, t = 0, codos = 0;
 	
 	printf("\n*** Memory State ***\n\n");
-	printf("REGISTERS:\n\n");
+	printf("REGISTERS:\n");
 	printf("\tAcumulator:\t\t%d\n",acumulator);
 	printf("\tInstruction Counter:\t%d\n",instruction_counter);
 	printf("\tInstruction Register:\t%d\n",instruction_register);
 	printf("\tOperation Code:\t\t%d\n",operation_code);
 	printf("\tOperand:\t\t%d\n",operand);
-	printf("\nMEMORY:\n\n");
+	printf("\nMEMORY:\n");
 
 	for (co = 0; co <= (MEM_SIZE-1); co++) {
 		if (co == 0) {
@@ -229,8 +232,7 @@ void dump_memory()
 	getchar();
 }
 
-void reset_memory(void)
-{
+void reset_memory(void) {
 	int i;
 
 	for (i = 0; i <MEM_SIZE; i++) {
@@ -243,63 +245,4 @@ void reset_memory(void)
 	instruction_register = 0;
 	last_memory_position_used = 0;
 	instruction_counter = 0;
-}
-
-/* 
-******************
- File functions
-******************
-*/
-
-void load_program(void)
-{
-   char filename[50];
-   FILE *filePtr;
-
-   clrscr();
-   printf("Enter program filename: ");
-   scanf("%s", filename);
-   printf("\n*** Program file load begin ***\n");
-
-   if ((filePtr = fopen(filename, "r")) == NULL) {
-      printf("An error occurred opening file\n");
-   } else {
-      while (!feof(filePtr)) {
-		fscanf(filePtr, "%d", &memory[last_memory_position_used]);
-		printf("\n%d => %d", last_memory_position_used, memory[last_memory_position_used]);
-		last_memory_position_used++;
-      }
-
-      fclose(filePtr);
-      printf("\n\n*** Program loaded in memory ***\n\n");
-   }
-
-   getchar();
-}
-
-void save_program(void)
-{
-	int conti = 0;
-	int temp;
-	char nombre[50];
-	FILE *savePtr;
-
-	clrscr();
-	printf("Enter program filename: ");
-	scanf("%s", nombre);
-   	printf("\n*** Program writing to disk begin ***\n");
-
-	if ((savePtr = fopen(nombre, "w")) == NULL) {
-		printf("\nAn error occurred writing file\n");
-	} else {
-		for(conti = 0; conti <= last_memory_position_used; conti++) {
-			fprintf(savePtr, "%d\n", memory[conti]);
-			printf("%d => %d\n",conti, memory[conti]);
-		}
-
-		printf("*** Program saved to disk ***\n");
-	}
-
-	fclose(savePtr);
-	getchar();
 }

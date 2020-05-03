@@ -21,13 +21,11 @@ int main() {
 				type_program();
 				run_program();
 				dump_memory();
-				reset_memory();
 				break;
 			case 2 :
 				load_program();
 				run_program();
 				dump_memory();
-				reset_memory();
 				break;
 			case 3 :
 				clrscr();
