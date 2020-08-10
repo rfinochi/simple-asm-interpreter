@@ -1,5 +1,7 @@
 # Simple Machine Language Interpreter
 
+[![License](https://img.shields.io/github/license/rfinochi/simple-machine-language-interpreter?style=plastic)](https://opensource.org/licenses/mit-license.php)
+
 This is an exercise of a simple interpreter of a fictitious assember: Simple Machine Language (SML)
 
 ## Introduction
